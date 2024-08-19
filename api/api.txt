@@ -1,0 +1,67 @@
+# import os
+# from fastapi import FastAPI, Request
+# import uvicorn
+# from dotenv import load_dotenv
+# from langchain_core.prompts import ChatPromptTemplate
+# from langchain_community.llms import Ollama
+# # from langchain_community.chat_models import ChatOpenAI
+# from langchain_openai import ChatOpenAI
+# from langchain_core.output_parsers import StrOutputParser
+
+
+# # Load environment variables
+# load_dotenv()
+
+# # Set environment variables for the application
+# os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+# os.environ["LANGCHAIN_TRACING_V2"] = "true"
+# os.environ["LANGCHAIN_API_KEY"] = os.getenv("LANGCHAIN_API_KEY")
+
+# # Initialize FastAPI app
+# app = FastAPI()
+
+# # Initialize models and prompts
+# model = ChatOpenAI()
+# llm = Ollama(model="gemma2:2b")
+
+# prompt1 = ChatPromptTemplate.from_template("who is president of the {country}?")
+# prompt2 = ChatPromptTemplate.from_template("what is the capital of {country}?")
+
+
+# # Define route for OpenAI prompt
+# @app.post("/openai")
+# async def openai_invoke(request: Request):
+#     data = await request.json()
+#     country = data['input']['country']
+#     try:
+#         formatted_prompt = prompt1.format_prompt(country=country).to_string()
+#         print("Formatted Prompt:", formatted_prompt)  # Debugging line
+        
+#         response = model(formatted_prompt)
+#         output=StrOutputParser().parse(response)
+
+#         print("Model Response:", response)  # Debugging line
+        
+#         return {"output": output}
+#     except TypeError as e:
+#         return {"error": f"TypeError: {str(e)}"}
+#     except Exception as e:
+#         return {"error": f"Unexpected error: {str(e)}"}
+
+
+# # Define route for Gemma model
+# @app.post("/gemma")
+# async def gemma_invoke(request: Request):
+#     data = await request.json()
+#     country = data['input']['country']
+#     # Use prompt2 with the Gemma model
+#     formatted_prompt = prompt2.format_prompt(country=country).to_string()
+#     response = llm(formatted_prompt)
+#     return {"output": response}
+
+
+# # Run the server
+# if __name__ == "__main__":
+#     uvicorn.run(app, host="localhost", port=8000, reload=True)
+
+
